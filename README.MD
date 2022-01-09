@@ -2,7 +2,7 @@
 This repository is meant to store various utility classes created by our instructors.
 
 ## How to contribute
-Make your changes & make PR you dumbass.
+Make a PR & Tell us at our discord.
 
 ## TOC
 
