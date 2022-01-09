@@ -24,6 +24,7 @@ SOFTWARE.
 package net.voigon;
 
 import com.google.common.reflect.ClassPath;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -36,20 +37,41 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 
+/**
+ * Allows listener auto registration based on package name.
+ * To use, instantiate the class and invoke one of the register method.
+ * @author Voigon
+ */
 @RequiredArgsConstructor
 public class ListenerAutoRegistration {
 
+    /**
+     * Your plugin instance
+     */
+    @NonNull
     final JavaPlugin
             plugin;
 
+    /**
+     * Should listeners marked with @DevServerListener be loaded
+     */
     final boolean
             loadDevListeners;
 
+    /**
+     * Register all listeners in given package, including its sub packages
+     * @param packageName given package name
+     */
     public void register(String packageName) {
         register(packageName, true);
 
     }
 
+    /**
+     * Register all listeners in given package
+     * @param packageName given package name
+     * @param deep set to true to include sub packages, otherwise will include only classes from given package
+     */
     @SneakyThrows
     public void register(String packageName, boolean deep) {
         ClassLoader classLoader = plugin.getClass().getClassLoader();
@@ -77,9 +99,11 @@ public class ListenerAutoRegistration {
 
     }
 
+    /**
+     * Marks listener as one that should only be loaded if loadDevListeners is set to true
+     */
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface DevServerListener {
-    }
+    public @interface DevServerListener { }
 
 }

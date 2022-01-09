@@ -24,6 +24,7 @@ SOFTWARE.
 package net.voigon;
 
 import com.google.common.reflect.ClassPath;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.command.CommandExecutor;
@@ -37,20 +38,41 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 
+/**
+ * Allows command auto registration based on package name.
+ * To use, instantiate the class and invoke one of the register method.
+ * @author Voigon
+ */
 @RequiredArgsConstructor
 public class CommandAutoRegistration {
 
+    /**
+     * Your plugin instance
+     */
+    @NonNull
     final JavaPlugin
             plugin;
 
+    /**
+     * Should commands marked with devServer=true be loaded
+     */
     final boolean
             loadDevCommands;
 
+    /**
+     * Register all commands in given package, including its sub packages
+     * @param packageName given package name
+     */
     public void register(String packageName) {
         register(packageName, true);
 
     }
 
+    /**
+     * Register all commands in given package
+     * @param packageName given package name
+     * @param deep set to true to include sub packages, otherwise will include only classes from given package
+     */
     public void register(String packageName, boolean deep) {
         ClassLoader classLoader = plugin.getClass().getClassLoader();
         ClassPath classPath;
@@ -103,10 +125,19 @@ public class CommandAutoRegistration {
 
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
+    /*
+     * Annotates a type as a command type
+     */
     public @interface Command {
 
+        /**
+         * Command name, should be lower case per Bukkit's standards
+         */
         String value();
 
+        /**
+         * True if this listener should only be loaded if loadDevCommands is set to true in CommandAutoRegistration
+         */
         boolean devServer() default false;
 
     }
